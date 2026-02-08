@@ -11,31 +11,12 @@ Verification pipeline for detecting common JWT security vulnerabilities using in
 ## Usage
 
 ```bash
-# Build
 docker build -t jwt-analyzer .
 
-# Basic usage
 docker run --rm jwt-analyzer <JWT_TOKEN>
 
-# Custom timeout for secret cracking (default: 10s)
 docker run --rm -e CRACK_TIMEOUT=30 jwt-analyzer <JWT_TOKEN>
 ```
-
-## Test Tokens
-
-### Weak Secret (HS256)
-Token signed with weak secret "secret":
-```bash
-docker run --rm jwt-analyzer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-```
-Expected: jwt-hack will attempt to crack the secret using the wordlist
-
-### None Algorithm (CVE-2015-9235)
-Token with algorithm set to "none":
-```bash
-docker run --rm jwt-analyzer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.
-```
-Expected: Tools will decode and show the "none" algorithm vulnerability
 
 ## References
 
