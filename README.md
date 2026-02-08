@@ -11,15 +11,20 @@ Verification pipeline for detecting common JWT security vulnerabilities using in
 ## Usage
 
 ```bash
+# Build
 docker build -t jwt-analyzer .
 
+# Basic usage
 docker run --rm jwt-analyzer <JWT_TOKEN>
 
-# Example with a sample JWT
+# Custom timeout for secret cracking (default: 10s)
+docker run --rm -e CRACK_TIMEOUT=30 jwt-analyzer <JWT_TOKEN>
+
+# Example
 docker run --rm jwt-analyzer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
 
-Content was rephrased for compliance with licensing restrictions.
+## References
 
 - [JWT mistakes & breaches](https://em360tech.com/tech-articles/jwt-just-wait-til-it-breaks-common-token-mistakes-and-how-avoid-them)
 - [JWT critical flaws](https://medium.com/@cyb3rzee/my-week-2-lab-deep-dive-into-jwt-security-5-critical-flaws-you-should-never-ignore-cf1c2ddc34e2)
