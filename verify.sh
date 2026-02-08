@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi
 
 TOKEN="$1"
-CRACK_TIMEOUT="${CRACK_TIMEOUT:-10}"
+CRACK_TIMEOUT="${CRACK_TIMEOUT:-30}"
 
 echo "=== JWT Security Verification Pipeline ==="
 echo ""
@@ -14,7 +14,7 @@ echo ""
 if [ -d "jwt_tool" ]; then
     echo "[1/3] Running jwt_tool..."
     echo "----------------------------------------"
-    python3 jwt_tool/jwt_tool.py "$TOKEN" -M at 2>/dev/null | grep -v "No config file" | grep -v "Running config setup" | grep -v "Configuration file built" | grep -v "Make sure to set"
+    python3 jwt_tool/jwt_tool.py "$TOKEN"
     echo ""
 else
     echo "[1/3] jwt_tool not found - skipping"
@@ -22,21 +22,21 @@ else
 fi
 
 if command -v jwt-hack &> /dev/null; then
-    echo "[2/3] Running jwt-hack..."
-    jwt-hack -t "$TOKEN"
+    echo "[2/3] Running jwt-hack (decode)..."
+    jwt-hack decode "$TOKEN"
     echo ""
 else
     echo "[2/3] jwt-hack not found - skipping"
     echo ""
 fi
 
-if [ -f "c-jwt-cracker/jwtcrack" ]; then
-    echo "[3/3] jwt-cracker - Weak Secret Detection"
+if command -v jwt-hack &> /dev/null; then
+    echo "[3/3] jwt-hack (crack with wordlist)..."
     echo "------------------------------------------"
-    timeout ${CRACK_TIMEOUT}s ./c-jwt-cracker/jwtcrack "$TOKEN" || echo "No weak secret found (${CRACK_TIMEOUT}s timeout)"
+    timeout ${CRACK_TIMEOUT}s jwt-hack crack -w secrets.txt "$TOKEN" 
     echo ""
 else
-    echo "[3/3] jwt-cracker not found - skipping"
+    echo "[3/3] jwt-hack not found - skipping"
     echo ""
 fi
 
